@@ -1,16 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 // import './App.css';
 import { Button } from 'antd';
-import Speech from 'react-speech';
+// import Speech from 'react-speech';
+import { useSpeechSynthesis } from "react-speech-kit";
 
 function App() {
   const [articles, setArticles] = useState(null);
 
-  const divStyle = {
-    background: 'rgba(0,0,0,.1)',
-    padding: '16px',
-    margin: '16px'
-  };
+  const [valToSpeak, setValToSpeak] = useState("Total number of articles");
+
+  const { speak } = useSpeechSynthesis();
+
   useEffect(() => {
     fetch(
       'https://api.nytimes.com/svc/topstories/v2/home.json?api-key=YFNhGhkzEe0Yq3KwV25z5b7qNvzGYmne'
@@ -24,7 +24,11 @@ function App() {
             return articleObj.section !== 'Opinion';
           })
         );
-      });
+      })
+      // .then(()=>{
+      //   return speak({ text: valToSpeak })
+      // });
+
   }, []);
 
   return (
@@ -39,19 +43,16 @@ function App() {
       Today's top {articles && articles.length} stories from The New York Times,
       for your listening pleasure:
       <br />
-      {articles &&
-        articles.map(({ section, title, abstract, published_date }, index) => (
-          <p key={index}>
-            {title}. {abstract}
-            {/*{' '}Next article:*/}
-          </p>
-        ))}
-      <Speech
-        textAsButton
-        // displayText={"SPEECH!"}
-        text="Welcome to react speech"
-        voice="Google UK English Male"
-      />
+
+      <Button style={{background:'red', width:'200px'}} type={'primary'} onClick={() => speak({ text: valToSpeak })}>▶️ Play The Daily Review</Button>
+
+      {/*{articles &&*/}
+      {/*  articles.map(({ section, title, abstract, published_date }, index) => (*/}
+      {/*    <p key={index}>*/}
+      {/*      {title}. {abstract}*/}
+      {/*      /!*{' '}Next article:*!/*/}
+      {/*    </p>*/}
+      {/*  ))}*/}
     </div>
   );
 }
