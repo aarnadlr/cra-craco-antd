@@ -5,11 +5,27 @@ import { Button } from 'antd';
 import { useSpeechSynthesis } from "react-speech-kit";
 
 function App() {
-  const [articles, setArticles] = useState(null);
 
-  const [valToSpeak, setValToSpeak] = useState("Total number of articles");
+  const tts = `Hello and welcome to The Daily Review Podcast powered by the New York Times. I am your host, Max Adler.
+Today's top 35 stories from The New York Times, for your listening pleasure:`;
 
-  const { speak } = useSpeechSynthesis();
+  const [articles, setArticles] = useState(tts);
+
+  const [valToSpeak, setValToSpeak] = useState(tts);
+
+  const { speak, cancel, voices } = useSpeechSynthesis();
+
+
+  const reducer = (string, currObj) => {
+
+    let title = currObj.title;
+    let abstract = currObj.abstract;
+
+    let finalString = string.concat(' ', title).concat(' ', abstract);
+
+    return finalString;
+
+  };
 
   useEffect(() => {
     fetch(
@@ -19,11 +35,19 @@ function App() {
       .then(data => {
         // setArticles(data.results)
 
+        // setArticles(
+        //   data.results.filter(articleObj => {
+        //     return articleObj.section !== 'Opinion';
+        //   })
+        // );
+
+        // results is an ARR of OBJECTS
+        // data.results.reduce(reducer, "")
+
         setArticles(
-          data.results.filter(articleObj => {
-            return articleObj.section !== 'Opinion';
-          })
-        );
+          data.results.reduce(reducer, "")
+        )
+
       })
       // .then(()=>{
       //   return speak({ text: valToSpeak })
@@ -35,8 +59,8 @@ function App() {
     <div className="App">
       <h1>The Daily Review Podcast</h1>
       {/*<h2>Top Stories</h2>*/}
-      <h3>Total number of articles below: {articles && articles.length}</h3>
-      <h4>Script for TTS to read:</h4>
+      {/*<h3>Total number of articles below: {articles && articles.length}</h3>*/}
+
       Hello and welcome to The Daily Review Podcast powered by the New York
       Times. I am your host, Max Adler.
       <br />
@@ -44,15 +68,23 @@ function App() {
       for your listening pleasure:
       <br />
 
-      <Button style={{background:'red', width:'200px'}} type={'primary'} onClick={() => speak({ text: valToSpeak })}>▶️ Play The Daily Review</Button>
-
+      <button style={{background:'limegreen', width:'240px', padding:'24px', margin:'16px', borderRadius:'32px'}} type={'primary'} onClick={() => speak({ text: articles })}>▶️ PLAY The Daily Review</button>
+      <br/>
+      <br/>
+      <button style={{background:'red', width:'240px', padding:'8px 24px', margin:'16px', borderRadius:'32px'}} type={'primary'} onClick={() => cancel()}>STOP</button>
+      <br/>
+      <br/>
       {/*{articles &&*/}
       {/*  articles.map(({ section, title, abstract, published_date }, index) => (*/}
       {/*    <p key={index}>*/}
-      {/*      {title}. {abstract}*/}
+      {/*      {title}.*/}
+      {/*      {abstract}*/}
       {/*      /!*{' '}Next article:*!/*/}
       {/*    </p>*/}
       {/*  ))}*/}
+
+        {articles}
+
     </div>
   );
 }
