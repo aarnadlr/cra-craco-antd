@@ -1,11 +1,24 @@
 import React from 'react';
-import './App.css';
-import { Button } from 'antd';
+import {
+  Switch,
+  Route,
+} from 'react-router-dom';
+import Timeline from './components/Timeline';
+import Home from './components/Home';
 
 function App() {
+
   return (
     <div className="App">
-      <Button type="primary">Button</Button>
+        <Switch>
+          <Route exact path="/">
+            <Home />
+          </Route>
+
+          <Route path="/timeline">
+            <Timeline/>
+          </Route>
+        </Switch>
     </div>
   );
 }

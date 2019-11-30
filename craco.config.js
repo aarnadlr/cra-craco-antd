@@ -3,6 +3,9 @@
 const CracoAntDesignPlugin = require('craco-antd');
 
 module.exports = {
+  output: {
+    crossOriginLoading: "anonymous"
+  },
   plugins: [{ plugin: CracoAntDesignPlugin }],
   jest: {
     configure(config) {
